@@ -1,0 +1,49 @@
+sti.py : Speech Transmission Index (STI) from speech waveforms
+
+Overview
+--------
+	sti.py provides a library of functions used to calculate the speech
+	transmission index (STI) from real speech waveforms. The speech trans-
+	mission index provides an index measure of speech intelligibility, useful
+	for evaluating transmission channel or codec suitability to carrying speech
+	audio. The method used by sti.py was described first by Payton and Braida
+	in 1999, and is an adaptation of the original STI method developed by
+	Houtgast and Steeneken in 1985. Refer to those publications for further
+	technical information on the index itself or the calculation approach.
+
+SOFTWARE DEPENDENCIES
+---------------------
+    matplotlib
+    Numpy
+    Scipy, release version 0.8 or greater
+
+INSTALLATION
+------------
+    No installation is required OR AVAILABLE at this time. The only method of 
+    running the program currently is by placing the 'sti.py' file into a python
+    project's source directory or including it in your module search path.
+
+Usage
+-----
+	sti.py provides library functions for calculating the speech transmission
+	index. At this time no command line interface or GUI utility is available
+	for accessing the functions. See the 'test.py' script contained in the
+	source code directory for a brief example of calculating the STI from
+	original and distorted raw audio samples.
+
+Authors
+-------
+	Jonathan Polom <jmpolom@wayne.edu>
+
+Date
+----
+    22 April 2011
+
+Version
+-------
+	0.5
+
+LICENSE
+-------
+    See 'COPYING' for the details of the GNU General Public License
+    Copyright (C) 2011 Jonathan Polom <jmpolom@wayne.edu>
