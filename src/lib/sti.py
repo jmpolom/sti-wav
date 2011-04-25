@@ -273,20 +273,20 @@ def octaveBandSpectra(filteredAudioBands, hz, fftRes=0.06):
         
     return spectras, fftfreqs
 
-def octaveBandCoherence(cleanAudioBands, dirtyAudioBands,
+def octaveBandCoherence(dirtyAudioBands, refAudioBands,
                         hz, fftRes=0.122):
     """
     Calculate coherence between clean and dirty octave band audio
     
     Input
     -----
-    * cleanAudioBands : array-like
-    
-        Clean octave band audio
-    
     * dirtyAudioBands : array-like
     
         Dirty octave band audio
+    
+    * refAudioBands : array-like
+    
+        Reference (clean) octave band audio
     
     * hz : float or int
     
@@ -312,13 +312,13 @@ def octaveBandCoherence(cleanAudioBands, dirtyAudioBands,
     # larger than half the length of the signal
     psdWindow = fftWindowSize(fftRes, hz)
     
-    print "Calculating coherence between clean and dirty filtered audio bands",
+    print "Calculating coherence between dirty and reference audio bands",
     print "(FFT length:",psdWindow,"samples)"
 
-    for i,band in enumerate(cleanAudioBands):
+    for i,band in enumerate(dirtyAudioBands):
         with catch_warnings():      # catch and ignore spurious warnings
             simplefilter('ignore')  # due to some irrelevant divide by 0's
-            coherence, freqs = cohere(band, dirtyAudioBands[i], 
+            coherence, freqs = cohere(band, refAudioBands[i], 
                                       NFFT=psdWindow, Fs=hz)
         
         # stack-up octave band spectras
@@ -425,7 +425,7 @@ def thirdOctaveRMS(spectras, fftfreqs, minFreq=0.25, maxFreq=25.0):
         RMS value of spectra over 1/3 octave intervals
     """
 
-    print "Calculating coherence RMS values over 1/3 octave bands:",
+    print "Calculating RMS coherence values over 1/3 octave bands:",
     print minFreq,"to",maxFreq,"Hz"
 
     thirdOctaveBands = thirdOctaves(minFreq, maxFreq)
@@ -553,15 +553,14 @@ def stiFromAudio(cleanAudio, dirtyAudio, hz):
     print "Copyright (C) 2011 Jon Polom <jmpolom@wayne.edu>"
     print "Distribution subject to the terms of the GNU General Public License"
     print
-    
     print "Beginning clean audio processing..."
     cleanOctaveBands, cleanRate = octaveBandFilter(cleanAudio, hz)
-    spectras, fftfreqs = octaveBandSpectra(cleanOctaveBands, cleanRate)
-    thirdOctaveMTF = thirdOctaveRootSum(spectras, fftfreqs)
     print "Clean audio processing COMPLETE!"
     print
     print "Beginning dirty audio processing..."
     dirtyOctaveBands, dirtyRate = octaveBandFilter(dirtyAudio, hz)
+    spectras, fftfreqs = octaveBandSpectra(dirtyOctaveBands, dirtyRate)
+    thirdOctaveMTF = thirdOctaveRootSum(spectras, fftfreqs)
     coherences, cfreqs = octaveBandCoherence(cleanOctaveBands, dirtyOctaveBands, hz)
     thirdOctaveCoherences = thirdOctaveRMS(coherences, cfreqs)
     print "Dirty audio processing COMPLETE!"
