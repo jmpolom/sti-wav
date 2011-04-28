@@ -522,7 +522,7 @@ def sti(modulations, coherences, minCoherence=0.8):
     print index
     return index
 
-def stiFromAudio(cleanAudio, dirtyAudio, hz):
+def stiFromAudio(reference, degraded, hz, downsample=None):
     """
     Calculate the speech transmission index (STI) from clean and dirty
     (ie: distorted) audio samples. The clean and dirty audio samples must have
@@ -553,18 +553,30 @@ def stiFromAudio(cleanAudio, dirtyAudio, hz):
     print "Copyright (C) 2011 Jon Polom <jmpolom@wayne.edu>"
     print "Distribution subject to the terms of the GNU General Public License"
     print
-    print "Beginning clean audio processing..."
-    cleanOctaveBands, cleanRate = octaveBandFilter(cleanAudio, hz)
-    print "Clean audio processing COMPLETE!"
+    print "Beginning reference audio processing..."
+    refOctaveBands, refRate = octaveBandFilter(reference, hz)
+    
+    if downsample != None:
+        refOctaveBands, refRate = downsampleBands(refOctaveBands, refRate,
+                                                  downsample)
+    
+    print "Reference audio processing COMPLETE!"
     print
-    print "Beginning dirty audio processing..."
-    dirtyOctaveBands, dirtyRate = octaveBandFilter(dirtyAudio, hz)
-    spectras, fftfreqs = octaveBandSpectra(dirtyOctaveBands, dirtyRate)
-    thirdOctaveMTF = thirdOctaveRootSum(spectras, fftfreqs)
-    coherences, cfreqs = octaveBandCoherence(cleanOctaveBands, dirtyOctaveBands, hz)
+    print "Beginning degraded audio processing..."
+    degrOctaveBands, degrRate = octaveBandFilter(degraded, hz)
+    
+    if downsample != None:
+        degrOctaveBands, degrRate = downsampleBands(degrOctaveBands, degrRate,
+                                                    downsample)
+    
+    spectras, sfreqs = octaveBandSpectra(degrOctaveBands, degrRate)
+    thirdOctaveMTF = thirdOctaveRootSum(spectras, sfreqs)
+    coherences, cfreqs = octaveBandCoherence(refOctaveBands, degrOctaveBands,
+                                             hz)
     thirdOctaveCoherences = thirdOctaveRMS(coherences, cfreqs)
     print "Dirty audio processing COMPLETE!"
     print
+
     return sti(thirdOctaveMTF, thirdOctaveCoherences)
 
 def readwav(path):
