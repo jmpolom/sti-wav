@@ -557,6 +557,10 @@ def stiFromAudio(reference, degraded, hz, calcref=False, downsample=None,
     
         Downsampling integer factor
     
+    * name : string
+    
+        Name of sample set, for output tracking in larger runs
+    
     Output
     ------
     * sti : array-like or float
@@ -639,14 +643,15 @@ def stiFromAudio(reference, degraded, hz, calcref=False, downsample=None,
         
         # add to STI output array
         try:
-            append(stiValues, sampleSTI)
+            stiValues.append(sampleSTI)
         except:
-            stiValues = array([sampleSTI])
+            stiValues = [sampleSTI]
     
     # unpack single value
     if len(stiValues) == 1:
         stiValues = stiValues[0]
     
+    print    
     return stiValues
 
 def readwav(path):

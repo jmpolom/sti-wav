@@ -15,8 +15,8 @@ __date__ = date(2011, 04, 22)
 __version__ = "0.5"
 
 # read audio
-audio, rate = readwav('speech/eval1.wav')
-dirtyAudio, dirtyRate = readwav('speech/eval1_echo100.wav')
+refAudio, refRate = readwav('speech/eval1.wav')
+degrAudio, degrRate = readwav('speech/eval1_echo100.wav')
 
 # calculate the STI. Visually verify console output.
-stiFromAudio(audio, dirtyAudio, rate)
+stiFromAudio(refAudio, degrAudio, rate, name='eval1.wav')
