@@ -228,7 +228,7 @@ def octaveBandFilter(audio, hz,
             octaveBandAudio = filtOut
 
     print
-    return octaveBandAudio, hz
+    return octaveBandAudio
 
 def octaveBandSpectra(filteredAudioBands, hz, fftRes=0.06):
     """
@@ -568,6 +568,10 @@ def stiFromAudio(reference, degraded, hz, calcref=False, downsample=None,
         The calculated speech transmission index (STI) value(s)
     """
     
+    # put single sample degraded array into another array so the loop works
+    if type(degraded) is not type([]):
+        degraded = [degraded]
+    
     print "-"*80
     print "Speech Transmission Index (STI) from speech waveforms".center(80)
     print "-"*80
@@ -583,7 +587,8 @@ def stiFromAudio(reference, degraded, hz, calcref=False, downsample=None,
     print
     print " Reference Speech ".center(80,'*')
     
-    refOctaveBands, refRate = octaveBandFilter(reference, hz)
+    refOctaveBands = octaveBandFilter(reference, hz)
+    refRate = hz
 
     # downsampling, if desired
     if type(downsample) is type(1):
@@ -607,14 +612,11 @@ def stiFromAudio(reference, degraded, hz, calcref=False, downsample=None,
     
     print
     
-    # put single sample degraded array into another array so the loop works
-    if type(degraded) is not type([]):
-        degraded = [degraded]
-    
     # loop over degraded audio samples and calculate STIs
     for j,sample in enumerate(degraded):
         print " Degraded Speech: Sample {0} ".format(j + 1).center(80,'*')
-        degrOctaveBands, degrRate = octaveBandFilter(sample, hz)
+        degrOctaveBands = octaveBandFilter(sample, hz)
+        degrRate = hz
         
         # downsampling, if desired
         if type(downsample) is type(1):
